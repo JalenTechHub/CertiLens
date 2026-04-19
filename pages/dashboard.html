@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CertiLens Pro — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════
+       CertiLens Pro Dashboard
+       ─ Industrial security aesthetic
+       ─ IBM Plex Mono / IBM Plex Sans
+       ─ Dark terminal-inspired with cyan accent
+    ═══════════════════════════════════════════════ */
+
+    :root {
+      --bg:           #080c10;
+      --bg-2:         #0d1117;
+      --surface:      #111820;
+      --surface-2:    #162030;
+      --border:       #1a2535;
+      --border-2:     #243348;
+      --text:         #c8d8e8;
+      --text-dim:     #5a7a94;
+      --text-muted:   #2e4a5e;
+      --accent:       #00d4ff;
+      --accent-2:     #0088cc;
+      --accent-dim:   rgba(0, 212, 255, 0.08);
+      --accent-border:rgba(0, 212, 255, 0.2);
+      --low:          #22c55e;
+      --low-bg:       rgba(34, 197, 94, 0.08);
+      --medium:       #f59e0b;
+      --medium-bg:    rgba(245, 158, 11, 0.08);
+      --high:         #ef4444;
+      --high-bg:      rgba(239, 68, 68, 0.08);
+      --critical:     #ff2266;
+      --critical-bg:  rgba(255, 34, 102, 0.08);
+      --sidebar-w:    220px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg-2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      padding: 20px 18px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #00d4ff 0%, #0066ff 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .sidebar-logo-name span { color: var(--accent); }
+
+    .sidebar-version {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .sidebar-nav {
+      padding: 12px 8px;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 10px 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-dim);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.15s;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: var(--accent-dim);
+      color: var(--text);
+      border-color: var(--accent-border);
+    }
+
+    .nav-item.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+
+    .nav-item-icon {
+      width: 18px;
+      text-align: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .sidebar-stat {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 11px;
+    }
+
+    .sidebar-stat-label { color: var(--text-muted); }
+    .sidebar-stat-value {
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-dim);
+      font-size: 11px;
+    }
+
+    /* ── Main area ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-2);
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.04em;
+    }
+
+    .topbar-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: rgba(0, 212, 255, 0.12);
+      border-color: rgba(0, 212, 255, 0.35);
+      color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: rgba(0, 212, 255, 0.2);
+      border-color: var(--accent);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border-2);
+      color: var(--text-dim);
+    }
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: var(--high);
+    }
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--high);
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 28px;
+    }
+
+    /* ── Pages ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Stat Cards ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .stat-card.accent::before   { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+    .stat-card.danger::before   { background: linear-gradient(90deg, var(--critical), var(--high)); }
+    .stat-card.warning::before  { background: var(--medium); }
+    .stat-card.success::before  { background: var(--low); }
+
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Chart ── */
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .chart-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .sparkline-wrap {
+      height: 64px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .sparkline-bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      min-height: 4px;
+      transition: height 0.4s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .sparkline-bar:hover { opacity: 0.8; }
+
+    /* ── History Table ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .table-head {
+      display: grid;
+      grid-template-columns: 1fr 120px 100px 130px;
+      padding: 10px 16px;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .table-body { max-height: 480px; overflow-y: auto; }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 100px 130px;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+      align-items: center;
+    }
+
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: var(--surface-2); }
+
+    .row-url {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .row-score {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .risk-chip {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 3px 7px;
+      border-radius: 3px;
+    }
+
+    .risk-chip.LOW      { background: var(--low-bg);      color: var(--low);      border: 1px solid rgba(34, 197, 94, 0.25); }
+    .risk-chip.MEDIUM   { background: var(--medium-bg);   color: var(--medium);   border: 1px solid rgba(245, 158, 11, 0.25); }
+    .risk-chip.HIGH     { background: var(--high-bg);     color: var(--high);     border: 1px solid rgba(239, 68, 68, 0.25); }
+    .risk-chip.CRITICAL { background: var(--critical-bg); color: var(--critical); border: 1px solid rgba(255, 34, 102, 0.25); }
+
+    .row-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .empty-table {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-table-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.4; }
+    .empty-table-title { font-family: 'IBM Plex Mono', monospace; font-size: 12px; margin-bottom: 6px; color: var(--text-dim); }
+
+    /* ── Settings ── */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .settings-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .settings-card-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-row:last-child { border-bottom: none; }
+
+    .setting-info { flex: 1; min-width: 0; padding-right: 12px; }
+    .setting-name { font-size: 13px; font-weight: 500; color: var(--text); }
+    .setting-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; line-height: 1.4; }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 38px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { display: none; }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--border-2);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid var(--border-2);
+    }
+
+    .toggle input:checked + .toggle-track {
+      background: rgba(0, 212, 255, 0.2);
+      border-color: var(--accent);
+    }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .toggle input:checked + .toggle-track::after {
+      transform: translateX(16px);
+      background: var(--accent);
+    }
+
+    /* Engine toggles */
+    .engine-toggles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .engine-toggle-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .engine-toggle-chip.on {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* ── About / Demo ── */
+    .about-hero {
+      background: linear-gradient(135deg, #0d1f35 0%, #0a1520 100%);
+      border: 1px solid var(--border-2);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+    }
+
+    .about-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .about-title span { color: var(--accent); }
+
+    .about-subtitle {
+      font-size: 14px;
+      color: var(--text-dim);
+      max-width: 560px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tech-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      background: rgba(0, 212, 255, 0.07);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      color: var(--accent);
+    }
+
+    .architecture-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .arch-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .arch-card-icon { font-size: 22px; margin-bottom: 8px; }
+    .arch-card-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .arch-card-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .secp-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .secp-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      border-left: 3px solid var(--accent-2);
+    }
+
+    .secp-domain {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .secp-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .secp-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    /* ── Util ── */
+    .section-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      margin-top: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title:first-child { margin-top: 0; }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--text);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-row">
+        <div class="sidebar-logo-icon">🔍</div>
+        <div>
+          <div class="sidebar-logo-name">Certi<span>Lens</span> Pro</div>
+        </div>
+      </div>
+      <div class="sidebar-version">v2.0.0 · MV3</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item active" data-page="dashboard" href="#">
+        <span class="nav-item-icon">📊</span> Dashboard
+      </a>
+      <a class="nav-item" data-page="history" href="#">
+        <span class="nav-item-icon">🕐</span> Scan History
+      </a>
+
+      <div class="nav-section-label" style="margin-top:8px">Configuration</div>
+      <a class="nav-item" data-page="settings" href="#">
+        <span class="nav-item-icon">⚙</span> Settings
+      </a>
+      <a class="nav-item" data-page="engines" href="#">
+        <span class="nav-item-icon">🔧</span> Engines
+      </a>
+
+      <div class="nav-section-label" style="margin-top:8px">Info</div>
+      <a class="nav-item" data-page="about" href="#">
+        <span class="nav-item-icon">ℹ</span> About
+      </a>
+      <a class="nav-item" data-page="demo" href="#">
+        <span class="nav-item-icon">⚡</span> Demo Mode
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-label">Total scans</span>
+        <span class="sidebar-stat-value" id="sb-total">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-label">High/Critical</span>
+        <span class="sidebar-stat-value" id="sb-threats" style="color:var(--high)">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-label">Avg score</span>
+        <span class="sidebar-stat-value" id="sb-avg">—</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-sub" id="topbar-sub">Security analysis overview</div>
+      </div>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- ── Dashboard Page ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-row" id="stats-row">
+          <div class="stat-card accent">
+            <div class="stat-label">Total Scans</div>
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-sub">all time</div>
+          </div>
+          <div class="stat-card danger">
+            <div class="stat-label">High/Critical</div>
+            <div class="stat-value" id="stat-threats" style="color:var(--critical)">0</div>
+            <div class="stat-sub">threats detected</div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-label">Avg Risk Score</div>
+            <div class="stat-value" id="stat-avg">—</div>
+            <div class="stat-sub">across all scans</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-label">Safe Sites</div>
+            <div class="stat-value" id="stat-safe" style="color:var(--low)">0</div>
+            <div class="stat-sub">score under 25</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Risk Score — Last 20 Scans</span>
+            <span style="font-size:11px;color:var(--text-muted)">newest → oldest</span>
+          </div>
+          <div class="sparkline-wrap" id="sparkline"></div>
+        </div>
+
+        <div class="section-title">Recent Scans</div>
+        <div class="table-wrap" id="recent-table"></div>
+      </div>
+
+      <!-- ── History Page ── -->
+      <div class="page" id="page-history">
+        <div class="table-wrap" id="history-table"></div>
+      </div>
+
+      <!-- ── Settings Page ── -->
+      <div class="page" id="page-settings">
+        <div class="settings-grid">
+          <div class="settings-card">
+            <div class="settings-card-title">🔍 Scan Behavior</div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Auto-scan on page load</div>
+                <div class="setting-desc">Automatically analyze every site you visit</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="s-autoScan">
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Highlight risk elements</div>
+                <div class="setting-desc">Outline insecure form fields on the page</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="s-highlightRiskElements">
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Browser notifications</div>
+                <div class="setting-desc">Alert when high-risk sites are detected</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="s-showNotifications">
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">🎨 Appearance</div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Theme</div>
+                <div class="setting-desc">Interface color scheme</div>
+              </div>
+              <select id="s-theme" style="background:var(--bg);border:1px solid var(--border-2);color:var(--text);padding:5px 8px;border-radius:5px;font-family:inherit;font-size:12px;cursor:pointer;">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Demo mode</div>
+                <div class="setting-desc">Show simulated data for offline demos</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="s-demoMode">
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-card" style="grid-column: 1 / -1">
+            <div class="settings-card-title">🗑 Data Management</div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <button class="btn btn-danger" id="btn-clear-history">Clear Scan History</button>
+              <span style="font-size:12px;color:var(--text-muted)">
+                Removes all stored scan results from local storage. This cannot be undone.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Engines Page ── -->
+      <div class="page" id="page-engines">
+        <div class="settings-card" style="max-width:600px">
+          <div class="settings-card-title">🔧 Analysis Engine Control</div>
+          <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;line-height:1.6">
+            Enable or disable individual analysis engines. Disabling an engine speeds up scans but reduces detection coverage.
+            All engines are recommended for maximum accuracy.
+          </p>
+          <div id="engine-controls"></div>
+        </div>
+      </div>
+
+      <!-- ── About Page ── -->
+      <div class="page" id="page-about">
+        <div class="about-hero">
+          <div class="about-title">Certi<span>Lens</span> Pro</div>
+          <div class="about-subtitle">
+            A multi-layered real-time phishing detection engine built as a Chrome Manifest V3 extension.
+            Combines Certificate Transparency monitoring, DNS security auditing, DOM heuristics, and
+            threat intelligence to replicate the core logic of enterprise EDR browser agents.
+          </div>
+          <div class="tech-tags">
+            <span class="tech-tag">Chrome MV3</span>
+            <span class="tech-tag">Vanilla JS</span>
+            <span class="tech-tag">Certificate Transparency</span>
+            <span class="tech-tag">RDAP / WHOIS</span>
+            <span class="tech-tag">DNS over HTTPS</span>
+            <span class="tech-tag">URLScan.io</span>
+            <span class="tech-tag">Homograph Detection</span>
+            <span class="tech-tag">DOM Heuristics</span>
+          </div>
+        </div>
+
+        <div class="section-title">Architecture</div>
+        <div class="architecture-grid">
+          <div class="arch-card">
+            <div class="arch-card-icon">⚙️</div>
+            <div class="arch-card-name">background.js</div>
+            <div class="arch-card-desc">Service worker orchestrating all API calls in parallel. Implements caching, retry logic, and risk score computation.</div>
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-icon">🖥️</div>
+            <div class="arch-card-name">content.js</div>
+            <div class="arch-card-desc">Injected into every page. Scans DOM for password fields on HTTP, hidden iframes, obfuscated scripts, and phishing form actions.</div>
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-icon">📊</div>
+            <div class="arch-card-name">popup.js</div>
+            <div class="arch-card-desc">Lightweight UI controller. Renders animated risk ring, engine cards, and findings list from background analysis results.</div>
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-icon">🔏</div>
+            <div class="arch-card-name">CT Logs (crt.sh)</div>
+            <div class="arch-card-desc">Queries Certificate Transparency logs. Certs issued in &lt;30 days are a strong phishing signal — attackers can't buy old certs.</div>
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-icon">🌐</div>
+            <div class="arch-card-name">RDAP + DoH</div>
+            <div class="arch-card-desc">Domain age via RDAP (replacement for WHOIS). DNS over HTTPS (Cloudflare) checks SPF/DMARC email authentication records.</div>
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-icon">🔤</div>
+            <div class="arch-card-name">Homograph Engine</div>
+            <div class="arch-card-desc">Detects IDN homograph attacks: Cyrillic 'а' vs Latin 'a', digit substitution ('0' → 'o'), and mixed Unicode script domains.</div>
+          </div>
+        </div>
+
+        <div class="section-title">CompTIA Security+ Domains Demonstrated</div>
+        <div class="secp-grid">
+          <div class="secp-item">
+            <div class="secp-domain">Domain 1.0</div>
+            <div class="secp-title">General Security Concepts</div>
+            <div class="secp-desc">Certificate Transparency, PKI trust chain analysis, TLS/HTTPS enforcement, CSP and HSTS header auditing.</div>
+          </div>
+          <div class="secp-item">
+            <div class="secp-domain">Domain 2.0</div>
+            <div class="secp-title">Threats, Vulnerabilities & Mitigations</div>
+            <div class="secp-desc">Phishing detection heuristics, brand impersonation patterns, homograph (IDN) attack detection, DOM-based threat indicators.</div>
+          </div>
+          <div class="secp-item">
+            <div class="secp-domain">Domain 3.0</div>
+            <div class="secp-title">Security Architecture</div>
+            <div class="secp-desc">Multi-layer defense-in-depth design: CT + RDAP + DNS + DOM + Threat Intel analyzed in parallel with graceful degradation.</div>
+          </div>
+          <div class="secp-item">
+            <div class="secp-domain">Domain 4.0</div>
+            <div class="secp-title">Security Operations</div>
+            <div class="secp-desc">Automated threat intelligence lookups (URLScan.io), scan history and audit trail, risk scoring with rationale logging.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Demo Page ── -->
+      <div class="page" id="page-demo">
+        <div class="about-hero" style="margin-bottom:20px">
+          <div class="about-title" style="font-size:18px">⚡ Demo Mode</div>
+          <div class="about-subtitle" style="margin-bottom:16px">
+            Demo mode replaces live API calls with a realistic pre-built report of a simulated phishing site
+            (<code style="font-family:IBM Plex Mono,monospace;font-size:12px;color:var(--accent)">paypa1-secure-login.xyz</code>).
+            Use this when presenting offline or when APIs are rate-limited.
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <button class="btn btn-primary" id="btn-enable-demo">Enable Demo Mode</button>
+            <span style="font-size:12px;color:var(--text-muted)" id="demo-status">Demo mode is currently OFF</span>
+          </div>
+        </div>
+
+        <div class="section-title">What the demo simulates</div>
+        <div class="settings-card" style="max-width:600px">
+          <div style="display:grid;gap:10px">
+            <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:18px">🎭</span>
+              <div>
+                <div style="font-weight:600;margin-bottom:2px">Brand impersonation (PayPal)</div>
+                <div style="font-size:12px;color:var(--text-dim)">Page contains PayPal branding on a non-PayPal domain</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:18px">📅</span>
+              <div>
+                <div style="font-weight:600;margin-bottom:2px">4-day-old domain</div>
+                <div style="font-size:12px;color:var(--text-dim)">RDAP shows registration 4 days ago — freshly registered for phishing</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:18px">🔤</span>
+              <div>
+                <div style="font-weight:600;margin-bottom:2px">Homograph: '1' → 'l'</div>
+                <div style="font-size:12px;color:var(--text-dim)">'paypa<strong>1</strong>' instead of 'paypa<strong>l</strong>' — digit substitution attack</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0">
+              <span style="font-size:18px">📝</span>
+              <div>
+                <div style="font-weight:600;margin-bottom:2px">Credential-stealing form</div>
+                <div style="font-size:12px;color:var(--text-dim)">Form submits to external Russian domain — classic credential harvester</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<div class="toast" id="toast"></div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
