@@ -10,40 +10,54 @@ Most "security extensions" check a URL against a single blocklist. CertiLens Pro
 
 ---
 
-## Architecture
+## Installation
 
-```
+1. Clone this repository
+2. Open Chrome → `chrome://extensions/`
+3. Enable **Developer mode** (top right)
+4. Click **Load unpacked** → select the extension folder
+5. The CertiLens Pro icon will appear in your toolbar
+
+**Chrome Web Store:** [CertiLens Pro](https://chromewebstore.google.com/detail/certilens-pro/gfpmhgmpjefpkjgmiheafciplajjccbb)
+
+---
+
+## Privacy
+
+CertiLens Pro does not collect, store, or transmit any personal information. All security analysis occurs locally on your device. See our full [Privacy Policy](PRIVACY.md).
+
+---
+
+## Architecture
 certilens-extension/
-├── manifest.json          # MV3 — declarative net request, service worker
-├── background.js          # Service worker: all API calls, caching, risk engine
-├── content.js             # DOM scanner: injected into every page
-├── popup.html / popup.js  # Popup UI: risk ring, engine cards, findings
+├── manifest.json # MV3 — declarative net request, service worker
+├── background.js # Service worker: all API calls, caching, risk engine
+├── content.js # DOM scanner: injected into every page
+├── popup.html / popup.js # Popup UI: risk ring, engine cards, findings
 ├── pages/
-│   ├── dashboard.html     # Full-page dashboard (Settings, History, About)
-│   └── dashboard.js       # Dashboard controller
+│ ├── dashboard.html # Full-page dashboard (Settings, History, About)
+│ └── dashboard.js # Dashboard controller
 └── icons/
-    └── icon{16,32,48,128}.png
-```
+└── icon{16,32,48,128}.png
 
 **Data flow:**
-```
 Active Tab URL
-     │
-     ├──► content.js ──────────────────────► DOM scan result
-     │                                            │
-     └──► background.js ◄────────────────────────┘
-              │
-              ├── crt.sh CT API (cert age)
-              ├── HEAD request (security headers)
-              ├── RDAP API (domain age)
-              ├── Cloudflare DoH (SPF / DMARC)
-              ├── URLScan.io (threat intel)
-              └── Local heuristics (homograph, brand spoofing)
-                        │
-                  Risk Score (0–100)
-                        │
-                   popup.js (UI render)
-```
+│
+├──► content.js ──────────────────────► DOM scan result
+│ │
+└──► background.js ◄────────────────────────┘
+│
+├── crt.sh CT API (cert age)
+├── HEAD request (security headers)
+├── RDAP API (domain age)
+├── Cloudflare DoH (SPF / DMARC)
+├── URLScan.io (threat intel)
+└── Local heuristics (homograph, brand spoofing)
+│
+Risk Score (0–100)
+│
+popup.js (UI render)
+
 
 ---
 
@@ -64,26 +78,24 @@ Active Tab URL
 ## Risk Scoring
 
 Scoring is **additive with hard caps** — each engine contributes independently:
-
-```
-Protocol (HTTP, no TLS)         → +20
+Protocol (HTTP, no TLS) → +20
 Suspicious TLD (.xyz, .tk, etc) → +15
-Homograph detected              → +20–30
-CT cert < 7 days old            → +30
-CT cert < 30 days old           → +15
-Domain age < 30 days            → +35
-Domain age < 90 days            → +20
-Missing CSP + HSTS              → +15–25
-No SPF/DMARC                    → +8–16
-Password field on HTTP          → +35
-Brand impersonation detected    → +30
-Hidden iframes                  → +15
-Obfuscated JS (eval/atob/etc)   → +8–15
-Cross-origin form action        → +20
-Malicious on URLScan.io         → +50
+Homograph detected → +20–30
+CT cert < 7 days old → +30
+CT cert < 30 days old → +15
+Domain age < 30 days → +35
+Domain age < 90 days → +20
+Missing CSP + HSTS → +15–25
+No SPF/DMARC → +8–16
+Password field on HTTP → +35
+Brand impersonation detected → +30
+Hidden iframes → +15
+Obfuscated JS (eval/atob/etc) → +8–15
+Cross-origin form action → +20
+Malicious on URLScan.io → +50
 ─────────────────────────────────────
-Total (capped at 100)           → Risk Score
-```
+Total (capped at 100) → Risk Score
+
 
 | Score | Level | Color |
 |-------|-------|-------|
@@ -107,18 +119,6 @@ CT logs are public and immutable — every TLS cert issued must be logged. A phi
 
 **Why local homograph detection instead of an API?**  
 Homograph analysis is deterministic — Unicode confusable character mappings don't change. Running it locally means: no API cost, no latency, works completely offline, and avoids sending the user's browsing history to a third party.
-
----
-
-## Installation
-
-1. Clone this repository
-2. Open Chrome → `chrome://extensions/`
-3. Enable **Developer mode** (top right)
-4. Click **Load unpacked** → select the `certilens-extension/` folder
-5. The CertiLens Pro icon will appear in your toolbar
-
-No API keys required — all services used are free-tier or keyless.
 
 ---
 
