@@ -157,4 +157,4 @@ For offline presentations, enable **Demo Mode** from the dashboard or popup. It 
 
 ## License
 
-MIT — built as a portfolio project demonstrating applied web security engineering.
+GNU GENERAL PUBLIC LICENSE — built as a portfolio project demonstrating applied web security engineering.
